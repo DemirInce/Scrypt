@@ -11,5 +11,7 @@ int main(){
     token t(1,1,"69",types::NUMBER);
     cout << t.value << " " << t.line << " " << t.column << endl;
 
+    // TEST
+
     return 0;
 }
