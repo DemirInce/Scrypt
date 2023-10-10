@@ -1,5 +1,7 @@
 #include <string>
 
+using namespace std;
+
 enum class types{
     NUMBER,
     OPERATOR,
