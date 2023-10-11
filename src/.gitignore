@@ -2,6 +2,7 @@
 # Compiled source #
 ###################
 main
+main.dSYM
 *.dSYM
 *.com
 *.class
