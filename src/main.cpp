@@ -7,7 +7,12 @@ using namespace std;
 
 int main(){
 
-    cout << "Hello World!\n"; 
+    Lexer l;
+    try{
+        l.read(cin);
+    } catch(string error){
+        cout << error << endl;
+    }
 
     return 0;
 }
