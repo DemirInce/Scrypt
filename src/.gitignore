@@ -2,6 +2,7 @@
 # Compiled source #
 ###################
 main
+*.dSYM
 *.com
 *.class
 *.dll
