@@ -14,7 +14,7 @@ vector<token*> Lexer::read(istream& i){
     int line = 1;
     int column = 1;
 
-    while(true){
+    while(!i.eof()){
         char c = i.get();
         if (c == '\n') {
             line++;
@@ -27,9 +27,12 @@ vector<token*> Lexer::read(istream& i){
         types type;
         string value;
 
-        if(c >= 48 && c <= 57){ // 0-9
+        if((c >= 48 && c <= 57) || c == '.'){ // 0-9
             type = types::NUMBER;
             value = number(i, c);
+            if(value == "error"){
+                throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
+            }
         } else if(c >= 42 && c <= 47){ // operators
             type = types::OPERATOR;
             value += c;
@@ -66,7 +69,7 @@ string Lexer::number(istream& i, char c) {
         if(p == '.' && !dot_latch){
             dot_latch = true;
         } else if(p == '.' && dot_latch){
-            return buffer;
+            return "error";
         }
         buffer += i.get();
         p = i.peek();
