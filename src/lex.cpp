@@ -2,6 +2,9 @@
 
 #include <iostream>
 #include <istream>
+#include <iomanip>
+
+#define HERE cout << "HERE\n";
 
 using namespace std;
 
@@ -37,8 +40,10 @@ vector<token*> Lexer::read(istream& i){
             par += c;
             t = new token(line, column, par, types::PARENTHESES);
             column++;
-        } else{
+        } else if(c != EOF){
             throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
+        } else{
+            break;
         }
         tvec.push_back(t);
     }
@@ -46,25 +51,27 @@ vector<token*> Lexer::read(istream& i){
     tvec.push_back(end);
 
     for(token* t:tvec){
-        cout << t->line << " " << t->column << " " << t->value << endl;
+        std::cout << std::setw(4) << t->line << std::setw(5) << t->column << "  " << t->value << "\n";
     }
 
     return tvec;
 }
 
-string Lexer::number(istream& i, char c){
+string Lexer::number(istream& i, char c) {
     string buffer;
     buffer += c;
+    bool dot_latch = false;
+
     char p = i.peek();
-    if((p >= 48 && p <= 57) || p == 46){
-        char next = i.get();
-        buffer += next;
-        char p_next = i.peek();
-        while(p_next >= 48 && p_next <= 57){
-            next = i.get();
-            buffer += next;
-            p_next = i.peek();
+    while ((p >= '0' && p <= '9') || p == '.') {
+        if(p == '.' && !dot_latch){
+            dot_latch = true;
+        } else if(p == '.' && dot_latch){
+            return buffer;
         }
+        buffer += i.get();
+        p = i.peek();
     }
+
     return buffer;
 }

@@ -16,5 +16,5 @@ main: main.cpp lex.cpp
 	${CXX} $(CXXFLAGS) -O3 -o $@ $+
 
 clean:
-	rm -f main main lex
+	rm -f main lex
 	rm -r main.dSYM lex.dSYM
