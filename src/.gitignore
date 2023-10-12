@@ -2,6 +2,9 @@
 # Compiled source #
 ###################
 main
+main.dSYM
+.vscode
+*.dSYM
 *.com
 *.class
 *.dll

@@ -3,9 +3,8 @@
 
 class Lexer{
 
-    string t_buffer;
-    vector<token*> t_vec;
-
-    vector<token*>read();
+public:
+    vector<token*> read(istream& i);
+    string number(istream& i, char c);
     
 };
