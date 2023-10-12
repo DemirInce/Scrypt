@@ -14,7 +14,7 @@ vector<token*> Lexer::read(istream& i){
     int line = 1;
     int column = 1;
 
-    while(!i.eof()){
+    while(true){
         char c = i.get();
         if (c == '\n') {
             line++;
@@ -24,27 +24,26 @@ vector<token*> Lexer::read(istream& i){
             column++;
             continue;
         }
-        token* t;
+        types type;
+        string value;
 
         if(c >= 48 && c <= 57){ // 0-9
-            string op = number(i, c);
-            t = new token(line, column, op, types::NUMBER);
-            column += op.length();
+            type = types::NUMBER;
+            value = number(i, c);
         } else if(c >= 42 && c <= 47){ // operators
-            string op;
-            op += c;
-            t = new token(line, column, op, types::OPERATOR);
-            column++;
+            type = types::OPERATOR;
+            value += c;
         } else if(c >= 40 && c <= 41){ // parentheses
-            string par;
-            par += c;
-            t = new token(line, column, par, types::PARENTHESES);
-            column++;
+            type = types::PARENTHESES;
+            value += c;
         } else if(c != EOF){
             throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
         } else{
             break;
         }
+
+        column += value.length();
+        token* t = new token(line, column, value, type);
         tvec.push_back(t);
     }
     token* end = new token(line, column, "END", types::END);

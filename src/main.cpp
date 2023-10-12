@@ -13,6 +13,7 @@ int main(){
         tvec = l.read(cin);
     } catch(string error){
         cout << error << endl;
+        return 1;
     }
 
     return 0;
