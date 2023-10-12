@@ -3,6 +3,7 @@
 ###################
 main
 main.dSYM
+.vscode
 *.dSYM
 *.com
 *.class
