@@ -8,8 +8,9 @@ using namespace std;
 int main(){
 
     Lexer l;
+    vector<token*> tvec;
     try{
-        l.read(cin);
+        tvec = l.read(cin);
     } catch(string error){
         cout << error << endl;
     }
