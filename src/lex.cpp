@@ -13,9 +13,10 @@ vector<token*> Lexer::read(istream& i){
     vector<token*> tvec;
     int line = 1;
     int column = 1;
+    string L;
+    getline(i, L);
 
-    while(!i.eof()){
-        char c = i.get();
+    for(char c: L){
         if (c == '\n') {
             line++;
             column = 1;
@@ -29,7 +30,7 @@ vector<token*> Lexer::read(istream& i){
 
         if((c >= 48 && c <= 57) || c == '.'){ // 0-9
             type = types::NUMBER;
-            value = number(i, c);
+            value = number(L, c, column);
             if(value == "error"){
                 throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
             }
@@ -39,7 +40,7 @@ vector<token*> Lexer::read(istream& i){
         } else if(c >= 40 && c <= 41){ // parentheses
             type = types::PARENTHESES;
             value += c;
-        } else if(c != EOF){
+        } else if(c != '\n'){
             throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
         } else{
             break;
@@ -59,20 +60,22 @@ vector<token*> Lexer::read(istream& i){
     return tvec;
 }
 
-string Lexer::number(istream& i, char c) {
+string Lexer::number(string L, char c, int column) {
     string buffer;
     buffer += c;
+    column++;
     bool dot_latch = false;
 
-    char p = i.peek();
+    char p = L[column];
     while ((p >= '0' && p <= '9') || p == '.') {
         if(p == '.' && !dot_latch){
             dot_latch = true;
         } else if(p == '.' && dot_latch){
             return "error";
         }
-        buffer += i.get();
-        p = i.peek();
+        buffer += p;
+        column++;
+        p = L[column];
     }
 
     return buffer;
