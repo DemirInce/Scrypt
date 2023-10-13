@@ -12,7 +12,7 @@ CXX      = g++
 
 all: main
 
-main: main.cpp lex.cpp 
+main: main.cpp lex.cpp parse.cpp
 	${CXX} $(CXXFLAGS) -O3 -o $@ $+
 
 clean:
