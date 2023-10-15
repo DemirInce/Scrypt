@@ -121,6 +121,17 @@ void Parser::printAST(Node* root, std::ostream& out) {
     }
 }
 
+
+
+
+
+// DONT CHANGE ANYTHNG BELLOW HERE!!!! Just here until I fix the linking issue. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
 vector<token*> Lexer::read(istream& i) {
     int line = 1;
     int column = 0; 
