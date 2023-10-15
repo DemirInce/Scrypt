@@ -8,6 +8,23 @@
 
 using namespace std;
 
+int main(){
+    Lexer l;
+    vector<token*> tvec;
+    try {
+        tvec = l.read(cin);
+    } catch (string error) {
+        cout << error << endl;
+        return 1;
+    }
+
+    for(token* t:tvec){
+        std::cout << std::setw(4) << t->line << std::setw(5) << t->column << "  " << t->value << "\n";
+    }
+
+    return 0;
+}
+
 
 vector<token*> Lexer::read(istream& i){
     vector<token*> tvec;
