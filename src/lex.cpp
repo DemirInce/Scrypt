@@ -85,7 +85,7 @@ string Lexer::number(istream& i, char c) {
     char p = i.peek();
     while ((p >= '0' && p <= '9') || p == '.') {
         if (p == '.' && dot_latch) {
-            throw "error";
+            return "error";
         }
         if (p == '.') {
             dot_latch = true;
