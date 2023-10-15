@@ -10,10 +10,10 @@
 using namespace std;
 
 int main(){
-    Lexer l;
+    Lexer* l = new Lexer();
     vector<token*> tvec;
     try {
-        tvec = l.read(cin);
+        tvec = l->read(cin);
     } catch (string error) {
         cout << error << endl;
         return 1;
@@ -23,12 +23,13 @@ int main(){
         std::cout << std::setw(4) << t->line << std::setw(5) << t->column << "  " << t->value << "\n";
     }
 
+    delete l;
+
     return 0;
 }
 
 
 vector<token*> Lexer::read(istream& i) {
-    vector<token*> tvec;
     int line = 1;
     int column = 0;  // Initialize column to 0
 
@@ -94,5 +95,12 @@ string Lexer::number(istream& i, char c) {
     }
 
     return buffer;
+}
+
+ Lexer::~Lexer(){
+        // Clean up dynamically allocated tokens
+        for (token* t : tvec) {
+            delete t;
+        }
 }
 

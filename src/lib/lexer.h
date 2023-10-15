@@ -5,7 +5,9 @@
 class Lexer{
 
 public:
+    vector<token*> tvec;
+
     vector<token*> read(istream& i);
     string number(istream& i, char c);
-    
+     ~Lexer();
 };
