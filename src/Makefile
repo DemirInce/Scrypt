@@ -15,6 +15,9 @@ all: lex
 lex: lex.cpp 
 	${CXX} $(CXXFLAGS) -O3 -o $@ $+
 
+parse: parse.cpp lex.cpp 
+	${CXX} $(CXXFLAGS) -O3 -o $@ $+
+
 clean:
 	rm -f lex
 	rm -r lex.dSYM

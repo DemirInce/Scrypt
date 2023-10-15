@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int main(){
+/*int main(){
     Lexer* l = new Lexer();
     vector<token*> tvec;
     try {
@@ -26,7 +26,7 @@ int main(){
     delete l;
 
     return 0;
-}
+}*/
 
 
 vector<token*> Lexer::read(istream& i) {
