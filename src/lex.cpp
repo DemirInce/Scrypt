@@ -3,6 +3,7 @@
 #include <iostream>
 #include <istream>
 #include <iomanip>
+#include <vector>
 
 #define HERE cout << "HERE\n";
 
