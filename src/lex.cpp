@@ -31,15 +31,15 @@ int main(){
 
 vector<token*> Lexer::read(istream& i) {
     int line = 1;
-    int column = 0;  // Initialize column to 0
+    int column = 0; 
 
     while (!i.eof()) {
         char c = i.get();
-        column++;  // Increment column for each character read
+        column++;
 
         if (c == '\n') {
             line++;
-            column = 0;  // Reset column when a newline is encountered
+            column = 0;
             continue;
         } else if (isspace(c)) {
             continue;
@@ -68,7 +68,7 @@ vector<token*> Lexer::read(istream& i) {
 
         token* t = new token(line, column, value, type);
         tvec.push_back(t);
-        column += value.length() - 1;  // Adjust column based on token value length
+        column += value.length() - 1;
     }
 
     token* end = new token(line, column, "END", types::END);
@@ -85,7 +85,7 @@ string Lexer::number(istream& i, char c) {
     char p = i.peek();
     while ((p >= '0' && p <= '9') || p == '.') {
         if (p == '.' && dot_latch) {
-            return "error";
+            throw "error";
         }
         if (p == '.') {
             dot_latch = true;
@@ -94,11 +94,14 @@ string Lexer::number(istream& i, char c) {
         p = i.peek();
     }
 
+    if (buffer.front() == '.' || buffer.back() == '.') {
+        return "error";
+    }
+
     return buffer;
 }
 
  Lexer::~Lexer(){
-        // Clean up dynamically allocated tokens
         for (token* t : tvec) {
             delete t;
         }
