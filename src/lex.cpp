@@ -51,8 +51,10 @@ vector<token*> Lexer::read(istream& i) {
         if ((c >= 48 && c <= 57) || c == '.') {
             type = types::NUMBER;
             value = number(i, c);
-            if (value == "error") {
+            if (value == "front") {
                 throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
+            } else if (value == "back") {
+                throw "Syntax error on line " + to_string(line) + " column " + to_string(column + value.length() - 1) + ".";
             }
         } else if (c >= 42 && c <= 47) {
             type = types::OPERATOR;
@@ -94,8 +96,10 @@ string Lexer::number(istream& i, char c) {
         p = i.peek();
     }
 
-    if (buffer.front() == '.' || buffer.back() == '.') {
-        return "error";
+    if (buffer.front() == '.') {
+        return "front";
+    } else if(buffer.back() == '.') {
+        return "back";
     }
 
     return buffer;
