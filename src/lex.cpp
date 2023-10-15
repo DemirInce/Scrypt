@@ -82,7 +82,7 @@ string Lexer::number(istream& i, char c, int column, int line) {
     char p = i.peek();
     while ((p >= '0' && p <= '9') || p == '.') {
         if (p == '.' && dot_latch) {
-            throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
+            throw "Syntax error on line " + to_string(line) + " column " + to_string(column + 1) + ".";
         }
         if (p == '.') {
             dot_latch = true;
@@ -93,7 +93,7 @@ string Lexer::number(istream& i, char c, int column, int line) {
     }
 
     if (buffer.front() == '.') {
-        throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
+        throw "Syntax error on line " + to_string(line) + " column " + to_string(column - buffer.length() + 1) + ".";
     } else if (buffer.back() == '.'){
         throw "Syntax error on line " + to_string(line) + " column " + to_string(column + 1) + ".";
     }
