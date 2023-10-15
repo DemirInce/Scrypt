@@ -15,7 +15,7 @@ all: lex
 lex: lex.cpp 
 	${CXX} $(CXXFLAGS) -O3 -o $@ $+
 
-parse: parse.cpp lex.cpp 
+parse: parse.cpp 
 	${CXX} $(CXXFLAGS) -O3 -o $@ $+
 
 clean:
