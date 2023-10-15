@@ -1,5 +1,6 @@
 #include "token.h"
 #include <string>
+#include <vector>
 
 class Lexer{
 
