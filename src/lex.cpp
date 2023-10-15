@@ -50,12 +50,7 @@ vector<token*> Lexer::read(istream& i) {
 
         if ((c >= 48 && c <= 57) || c == '.') {
             type = types::NUMBER;
-            value = number(i, c);
-            if (value == "front") {
-                throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
-            } else if (value == "back") {
-                throw "Syntax error on line " + to_string(line) + " column " + to_string(column + value.length() - 1) + ".";
-            }
+            value = number(i, c, column, line);
         } else if (c >= 42 && c <= 47) {
             type = types::OPERATOR;
             value += c;
@@ -79,7 +74,7 @@ vector<token*> Lexer::read(istream& i) {
     return tvec;
 }
 
-string Lexer::number(istream& i, char c) {
+string Lexer::number(istream& i, char c, int column, int line) {
     string buffer;
     buffer += c;
     bool dot_latch = (c == '.');
@@ -87,19 +82,20 @@ string Lexer::number(istream& i, char c) {
     char p = i.peek();
     while ((p >= '0' && p <= '9') || p == '.') {
         if (p == '.' && dot_latch) {
-            return "error";
+            throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
         }
         if (p == '.') {
             dot_latch = true;
         }
         buffer += i.get();
+        column++;
         p = i.peek();
     }
 
     if (buffer.front() == '.') {
-        return "front";
-    } else if(buffer.back() == '.') {
-        return "back";
+        throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
+    } else if (buffer.back() == '.'){
+        throw "Syntax error on line " + to_string(line) + " column " + to_string(column + 1) + ".";
     }
 
     return buffer;
