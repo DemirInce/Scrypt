@@ -23,6 +23,7 @@ int main(){
         cout << p.evaluate(ast.get()) << endl;
 
         // No need to delete ast; unique_ptr will take care of it
+
     } catch (runtime_error& e) {
         cout << e.what() << endl;
         if (string(e.what()).find("Unexpected token") != string::npos) {
