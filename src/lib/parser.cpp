@@ -60,6 +60,8 @@ std::unique_ptr<Node> Parser::factor() {
         }
         currentToken++;
         return innerExp;
+    }  else if (tokens[currentToken]->type == types::OPERATOR && tokens[currentToken+1]->type == types::NUMBER) {
+        return std::make_unique<Node>(tokens[currentToken++]);   
     }
     throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
         " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
