@@ -11,10 +11,10 @@ Parser::Parser(const std::vector<token*>& tokens) : tokens(tokens), currentToken
 
 std::unique_ptr<Node> Parser::parse() {
     auto root = expression();
-    if (currentToken != tokens.size() || tokens[currentToken - 1]->type != types::END) {
+    /*if (currentToken != tokens.size() || tokens[currentToken - 1]->type != types::END) {
         throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
             " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
-    }
+    }*/
     return root;
 }
 
