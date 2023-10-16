@@ -9,6 +9,10 @@
 Parser::Parser(const std::vector<token*>& tokens) : tokens(tokens), currentToken(0) {}
 
 std::unique_ptr<Node> Parser::parse() {
+    if (tokens.empty() || (tokens.size() == 1 && tokens[0]->type == types::END)) {
+        throw std::runtime_error("Unexpected end of input");
+    }
+    
     auto root = expression();
     if (currentToken != tokens.size() - 1 || (tokens[currentToken]->type != types::END)) {
         std::string errorMsg = "Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
