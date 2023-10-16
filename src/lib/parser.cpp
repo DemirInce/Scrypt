@@ -12,6 +12,7 @@ std::unique_ptr<Node> Parser::parse() {
     int x = tokens.size();
     auto root = expression();
     if (currentToken != x - 1 || tokens[currentToken]->type != types::END) {
+        cout << "1st\n";
         throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
             " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
     }
@@ -52,13 +53,15 @@ std::unique_ptr<Node> Parser::factor() {
         auto innerExp = expression();
         if (tokens[currentToken]->type != types::PARENTHESES || tokens[currentToken]->value != ")") {
             throw std::runtime_error("Expected closing parenthesis at line " + std::to_string(tokens[currentToken]->line) +
-                " column " + std::to_string(tokens[currentToken]->column));
+               " column " + std::to_string(tokens[currentToken]->column));
         }
         currentToken++;
         return innerExp;
     }
+    cout << "2nd\n";
     throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
         " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
+    return NULL;
 }
 
 
