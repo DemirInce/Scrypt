@@ -12,10 +12,10 @@ CXX      = g++
 
 all: lex
 
-lex: lex.cpp 
+lex: lex.cpp lib/lexer.cpp
 	${CXX} $(CXXFLAGS) -O3 -o $@ $+
 
-parse: parse.cpp 
+parse: parse.cpp lib/parser.cpp lib/lexer.cpp
 	${CXX} $(CXXFLAGS) -O3 -o $@ $+
 
 clean:
