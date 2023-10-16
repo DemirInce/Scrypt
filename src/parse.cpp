@@ -24,7 +24,7 @@ int main(){
         std::cout << p.evaluate(ast.get()) << std::endl;
     } catch (std::runtime_error& e) {
         std::cout << e.what() << std::endl;
-        if (std::string(e.what()).find("Unexpected token") != std::string::npos) {
+        if (std::string(e.what()).find("Unexpected token") != std::string::npos || std::string(e.what()).find("closing") != std::string::npos) {
             delete l;
             return 2;
         } else if (std::string(e.what()).find("division by zero") != std::string::npos) {
