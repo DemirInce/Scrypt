@@ -27,7 +27,7 @@ public:
 
 private:
     std::vector<token*> tokens;
-    int currentToken;
+    size_t currentToken;
 
     std::unique_ptr<Node> expression(); // Updated return type
     std::unique_ptr<Node> term();       // Updated return type

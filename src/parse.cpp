@@ -9,7 +9,7 @@ int main(){
     Lexer* l = new Lexer();
     std::vector<token*> tvec;
     try {
-        tvec = l->read(std::cin);
+        tvec = l->read(cin);
     } catch (std::string error) {
         std::cout << error << std::endl;
         delete l;
@@ -25,25 +25,15 @@ int main(){
     } catch (std::runtime_error& e) {
         std::cout << e.what() << std::endl;
         if (std::string(e.what()).find("Unexpected token") != std::string::npos || std::string(e.what()).find("closing") != std::string::npos) {
-            for (auto& t : tvec) {  // Add this loop here
-                delete t;
-            }
             delete l;
             return 2;
         } else if (std::string(e.what()).find("division by zero") != std::string::npos) {
-            for (auto& t : tvec) {  // Add this loop here
-                delete t;
-            }
             delete l;
             return 3;
         }
     }
 
-    for (auto& t : tvec) {  // Add this loop here too
-        delete t;
-    }
-
     delete l;
     return 0;
-}
 
+}

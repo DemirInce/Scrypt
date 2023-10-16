@@ -19,7 +19,7 @@ std::unique_ptr<Node> Parser::parse() {
 
 
 std::unique_ptr<Node> Parser::expression() {
-    int x = tokens.size();
+    size_t x = tokens.size();  // Changed type to size_t
     auto left = term();
     while (currentToken < x && tokens[currentToken]->type == types::OPERATOR &&
            (tokens[currentToken]->value == "+" || tokens[currentToken]->value == "-")) {
@@ -32,7 +32,7 @@ std::unique_ptr<Node> Parser::expression() {
 }
 
 std::unique_ptr<Node> Parser::term() {
-    int x = tokens.size();
+    size_t x = tokens.size();  // Changed type to size_t
     auto left = factor();
     while (currentToken < x && tokens[currentToken]->type == types::OPERATOR &&
            (tokens[currentToken]->value == "*" || tokens[currentToken]->value == "/")) {
