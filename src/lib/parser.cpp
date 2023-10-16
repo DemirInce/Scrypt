@@ -1,3 +1,4 @@
+
 #include "parser.h"
 #include "lexer.h"
 
@@ -9,23 +10,19 @@
 Parser::Parser(const std::vector<token*>& tokens) : tokens(tokens), currentToken(0) {}
 
 std::unique_ptr<Node> Parser::parse() {
-    if (tokens.empty() || (tokens.size() == 1 && tokens[0]->type == types::END)) {
-        throw std::runtime_error("Unexpected end of input");
-    }
-    
     auto root = expression();
-    if (currentToken != tokens.size() - 1 || (tokens[currentToken]->type != types::END)) {
-        std::string errorMsg = "Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
-            " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value;
-        throw std::runtime_error(errorMsg);
+    if (currentToken != tokens.size() || tokens[currentToken - 1]->type != types::END) {
+        throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
+            " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
     }
-    currentToken++;  // advance past END token
     return root;
 }
 
+
 std::unique_ptr<Node> Parser::expression() {
+    size_t x = tokens.size();  // Changed type to size_t
     auto left = term();
-    while (currentToken < tokens.size() - 1 && tokens[currentToken]->type == types::OPERATOR &&
+    while (currentToken < x && tokens[currentToken]->type == types::OPERATOR &&
            (tokens[currentToken]->value == "+" || tokens[currentToken]->value == "-")) {
         auto op = std::make_unique<Node>(tokens[currentToken++]);
         op->children.push_back(std::move(left));
@@ -36,8 +33,9 @@ std::unique_ptr<Node> Parser::expression() {
 }
 
 std::unique_ptr<Node> Parser::term() {
+    size_t x = tokens.size();  // Changed type to size_t
     auto left = factor();
-    while (currentToken < tokens.size() - 1 && tokens[currentToken]->type == types::OPERATOR &&
+    while (currentToken < x && tokens[currentToken]->type == types::OPERATOR &&
            (tokens[currentToken]->value == "*" || tokens[currentToken]->value == "/")) {
         auto op = std::make_unique<Node>(tokens[currentToken++]);
         op->children.push_back(std::move(left));
@@ -48,19 +46,15 @@ std::unique_ptr<Node> Parser::term() {
 }
 
 std::unique_ptr<Node> Parser::factor() {
-    if (currentToken >= tokens.size() - 1) {
+    if (currentToken >= tokens.size()) {
         throw std::runtime_error("Unexpected end of input");
     }
     if (tokens[currentToken]->type == types::NUMBER) {
         return std::make_unique<Node>(tokens[currentToken++]);
     } else if (tokens[currentToken]->type == types::PARENTHESES && tokens[currentToken]->value == "(") {
         currentToken++;
-        if (tokens[currentToken]->type == types::OPERATOR) {
-            throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
-                " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
-        }
         auto innerExp = expression();
-        if (currentToken >= tokens.size() - 1 || tokens[currentToken]->type != types::PARENTHESES || tokens[currentToken]->value != ")") {
+        if (currentToken >= tokens.size() || tokens[currentToken]->type != types::PARENTHESES || tokens[currentToken]->value != ")") {
             throw std::runtime_error("Expected closing parenthesis at line " + std::to_string(tokens[currentToken]->line) +
                " column " + std::to_string(tokens[currentToken]->column));
         }
@@ -70,6 +64,8 @@ std::unique_ptr<Node> Parser::factor() {
     throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
         " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
 }
+
+
 
 double Parser::evaluate(Node* root) {
     if (root->t->type == types::NUMBER) {
