@@ -1,33 +1,35 @@
 #include "lib/parser.h"
 #include "lib/lexer.h"
-
 #include <stdexcept>
 #include <iostream>
 #include <string>
+#include <memory> // For std::unique_ptr
+
 
 int main(){
     Lexer* l = new Lexer();
-    vector<token*> tvec;
+    std::vector<token*> tvec;
     try {
         tvec = l->read(cin);
-    } catch (string error) {
-        cout << error << endl;
+    } catch (std::string error) {
+        std::cout << error << std::endl;
+        delete l;
         return 1;
     }
 
     Parser p(tvec);
     try {
-        Node* ast = p.parse();
-        p.printAST(ast, cout);
-        cout << endl;
-        cout << p.evaluate(ast) << endl;
-
-        delete ast; // Cleanup the AST
-    } catch (runtime_error& e) {
-        cout << e.what() << endl;
-        if (string(e.what()).find("Unexpected token") != string::npos) {
+        auto ast = p.parse();
+        p.printAST(ast.get(), std::cout);
+        std::cout << std::endl;
+        std::cout << p.evaluate(ast.get()) << std::endl;
+    } catch (std::runtime_error& e) {
+        std::cout << e.what() << std::endl;
+        if (std::string(e.what()).find("Unexpected token") != std::string::npos) {
+            delete l;
             return 2;
-        } else if (string(e.what()).find("division by zero") != string::npos) {
+        } else if (std::string(e.what()).find("division by zero") != std::string::npos) {
+            delete l;
             return 3;
         }
     }
@@ -38,9 +40,9 @@ int main(){
 
 Parser::Parser(const std::vector<token*>& tokens) : tokens(tokens), currentToken(0) {}
 
-Node* Parser::parse() {
+std::unique_ptr<Node> Parser::parse() {
     int x = tokens.size();
-    Node* root = expression();
+    auto root = expression();
     if (currentToken != x - 1 || tokens[currentToken]->type != types::END) {
         throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
             " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
@@ -48,38 +50,38 @@ Node* Parser::parse() {
     return root;
 }
 
-Node* Parser::expression() {
+std::unique_ptr<Node> Parser::expression() {
     int x = tokens.size();
-    Node* left = term();
+    auto left = term();
     while (currentToken < x && tokens[currentToken]->type == types::OPERATOR &&
            (tokens[currentToken]->value == "+" || tokens[currentToken]->value == "-")) {
-        Node* op = new Node(tokens[currentToken++]);
-        op->children.push_back(left);
+        auto op = std::make_unique<Node>(tokens[currentToken++]);
+        op->children.push_back(std::move(left));
         op->children.push_back(term());
-        left = op;
+        left = std::move(op);
     }
     return left;
 }
 
-Node* Parser::term() {
+std::unique_ptr<Node> Parser::term() {
     int x = tokens.size();
-    Node* left = factor();
+    auto left = factor();
     while (currentToken < x && tokens[currentToken]->type == types::OPERATOR &&
            (tokens[currentToken]->value == "*" || tokens[currentToken]->value == "/")) {
-        Node* op = new Node(tokens[currentToken++]);
-        op->children.push_back(left);
+        auto op = std::make_unique<Node>(tokens[currentToken++]);
+        op->children.push_back(std::move(left));
         op->children.push_back(factor());
-        left = op;
+        left = std::move(op);
     }
     return left;
 }
 
-Node* Parser::factor() {
+std::unique_ptr<Node> Parser::factor() {
     if (tokens[currentToken]->type == types::NUMBER) {
-        return new Node(tokens[currentToken++]);
+        return std::make_unique<Node>(tokens[currentToken++]);
     } else if (tokens[currentToken]->type == types::PARENTHESES && tokens[currentToken]->value == "(") {
         currentToken++;
-        Node* innerExp = expression();
+        auto innerExp = expression();
         if (tokens[currentToken]->type != types::PARENTHESES || tokens[currentToken]->value != ")") {
             throw std::runtime_error("Expected closing parenthesis at line " + std::to_string(tokens[currentToken]->line) +
                 " column " + std::to_string(tokens[currentToken]->column));
@@ -91,12 +93,14 @@ Node* Parser::factor() {
         " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
 }
 
+
 double Parser::evaluate(Node* root) {
     if (root->t->type == types::NUMBER) {
-        return stod(root->t->value);
+        return std::stod(root->t->value);
     } else if (root->t->type == types::OPERATOR) {
-        double leftValue = evaluate(root->children[0]);
-        double rightValue = evaluate(root->children[1]);
+        double leftValue = evaluate(root->children[0].get());
+        double rightValue = evaluate(root->children[1].get());
+
         if (root->t->value == "+") return leftValue + rightValue;
         if (root->t->value == "-") return leftValue - rightValue;
         if (root->t->value == "*") return leftValue * rightValue;
@@ -113,17 +117,14 @@ void Parser::printAST(Node* root, std::ostream& out) {
         out << root->t->value;
     } else if (root->t->type == types::OPERATOR) {
         out << "(";
-        printAST(root->children[0], out);
+        printAST(root->children[0].get(), out);
         out << " " << root->t->value << " ";
-        printAST(root->children[1], out);
+        printAST(root->children[1].get(), out);
         out << ")";
     } else {
         throw std::runtime_error("Unknown node type in AST.");
     }
 }
-
-
-
 
 
 // DONT CHANGE ANYTHNG BELLOW HERE!!!! Just here until I fix the linking issue. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
