@@ -10,11 +10,14 @@ CXX      = g++
 #  $+ is a list of all the dependencies
 #  $< is the first dependency
 
-all: main
+all: lex
 
-main: main.cpp lex.cpp parse.cpp
+lex: lex.cpp lib/lexer.cpp
+	${CXX} $(CXXFLAGS) -O3 -o $@ $+
+
+parse: parse.cpp lib/parser.cpp lib/lexer.cpp
 	${CXX} $(CXXFLAGS) -O3 -o $@ $+
 
 clean:
-	rm -f main lex
-	rm -r main.dSYM lex.dSYM
+	rm -f lex
+	rm -r lex.dSYM

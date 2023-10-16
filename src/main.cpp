@@ -17,10 +17,13 @@ int main(){
 
     Parser p(tvec);
     try {
-        Node* ast = p.parse();
-        p.printAST(ast, cout);
+        auto ast = p.parse();  // Use auto to let the compiler deduce the unique_ptr type
+        p.printAST(ast.get(), cout);  // ast.get() retrieves the raw pointer from the unique_ptr
         cout << endl;
-        cout << p.evaluate(ast) << endl;
+        cout << p.evaluate(ast.get()) << endl;
+
+        // No need to delete ast; unique_ptr will take care of it
+
     } catch (runtime_error& e) {
         cout << e.what() << endl;
         if (string(e.what()).find("Unexpected token") != string::npos) {

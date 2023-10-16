@@ -3,6 +3,8 @@
 ###################
 main
 main.dSYM
+lex
+parse
 .vscode
 *.dSYM
 *.com
