@@ -21,6 +21,8 @@ int main(){
         p.printAST(ast, cout);
         cout << endl;
         cout << p.evaluate(ast) << endl;
+
+        delete ast; // Cleanup the AST
     } catch (runtime_error& e) {
         cout << e.what() << endl;
         if (string(e.what()).find("Unexpected token") != string::npos) {
@@ -31,7 +33,6 @@ int main(){
     }
 
     delete l;
-
     return 0;
 }
 
@@ -209,4 +210,3 @@ string Lexer::number(istream& i, char c, int column, int line) {
             delete t;
         }
 }
-

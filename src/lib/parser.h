@@ -9,6 +9,12 @@ struct Node {
     std::vector<Node*> children;
 
     Node(token* tok): t(tok) {}
+    
+    ~Node() {
+        for (Node* child : children) {
+            delete child;
+        }
+    }
 };
 
 class Parser {

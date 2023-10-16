@@ -21,6 +21,8 @@ int main(){
         p.printAST(ast, cout);
         cout << endl;
         cout << p.evaluate(ast) << endl;
+
+        delete ast; // Cleanup the AST
     } catch (runtime_error& e) {
         cout << e.what() << endl;
         if (string(e.what()).find("Unexpected token") != string::npos) {
