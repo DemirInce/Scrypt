@@ -13,20 +13,20 @@ struct Node {
     int child_count = 0;
     vector<Node*> children;
     Node* parent = nullptr;
-    
-    ~Node();
-    void print();
 };
 
 class Parser {
 
     private:
         vector<token*> tokens;
+        vector<Node*> all_nodes;
         void build(size_t i, Node* n);
 
     public:
-        Node* head = NULL;
         Parser(const std::vector<token*>& tokens);
+        ~Parser();
+
+        Node* head = NULL;
         double calculate(Node* node);
         void print(Node* node, bool isRoot);
 

@@ -17,8 +17,15 @@ Parser::Parser(const vector<token*>& tokens) {
         i++;
     }
     Node* n = new Node(tokens[i]);
+    all_nodes.push_back(n);
     head = n;
     build(1, head);
+}
+
+Parser::~Parser(){
+    for(Node* n:all_nodes){
+        delete n;
+    }
 }
 
 void Parser::build(size_t i , Node* n){
@@ -31,7 +38,8 @@ void Parser::build(size_t i , Node* n){
         build(i+1, n->parent);
     }else{
 
-        Node* next = new Node(t);   
+        Node* next = new Node(t);  
+        all_nodes.push_back(next); 
         next->parent = n;     
         n->children.push_back(next);
         n->child_count++;
