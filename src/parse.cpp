@@ -29,7 +29,7 @@ int main(){
             return 3;
         }
     }else{
-        cout << "Unexpected token at line " << tvec[0]->line << "column " << tvec[0]->column << ":END\n"; //yes I really did this. I'm lazy
+        cout << "Unexpected token at line " << tvec[0]->line << " column " << tvec[0]->column << " :END\n"; //yes I really did this. I'm lazy
         delete l;
         return 2;
     }
