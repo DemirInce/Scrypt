@@ -1,102 +1,108 @@
-
 #include "parser.h"
-#include "lexer.h"
-
-#include <stdexcept>
+#include <vector>
 #include <iostream>
-#include <string>
-#include <memory>
+#include <numeric>
 
-Parser::Parser(const std::vector<token*>& tokens) : tokens(tokens), currentToken(0) {}
+using namespace std;
 
-std::unique_ptr<Node> Parser::parse() {
-    auto root = expression();
-    /*if (currentToken != tokens.size() || tokens[currentToken - 1]->type != types::END) {
-        throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
-            " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
-    }*/
-    return root;
+Node::Node(token* t) {
+    this->value = t->value;
+    this->type = t->type;
 }
 
-
-std::unique_ptr<Node> Parser::expression() {
-    size_t x = tokens.size();  // Changed type to size_t
-    auto left = term();
-    while (currentToken < x && tokens[currentToken]->type == types::OPERATOR &&
-           (tokens[currentToken]->value == "+" || tokens[currentToken]->value == "-")) {
-        auto op = std::make_unique<Node>(tokens[currentToken++]);
-        op->children.push_back(std::move(left));
-        op->children.push_back(term());
-        left = std::move(op);
-    }
-    return left;
+void Node::print(){
+    
 }
 
-std::unique_ptr<Node> Parser::term() {
-    size_t x = tokens.size();  // Changed type to size_t
-    auto left = factor();
-    while (currentToken < x && tokens[currentToken]->type == types::OPERATOR &&
-           (tokens[currentToken]->value == "*" || tokens[currentToken]->value == "/")) {
-        auto op = std::make_unique<Node>(tokens[currentToken++]);
-        op->children.push_back(std::move(left));
-        op->children.push_back(factor());
-        left = std::move(op);
+Parser::Parser(const vector<token*>& tokens){
+    this->tokens = tokens;
+    int i = 0;
+    while(tokens[i]->type == types::PARENTHESES){
+    i++;
     }
-    return left;
+    Node* n = new Node(tokens[i]);
+    head = n;
+    build(1, head);
+    cout << endl;
+    cout << calculate(head) << endl;;
 }
 
-std::unique_ptr<Node> Parser::factor() {
-    if (currentToken >= tokens.size()) {
-        throw std::runtime_error("Unexpected end of input");
-    }
-    if (tokens[currentToken]->type == types::NUMBER) {
-        return std::make_unique<Node>(tokens[currentToken++]);
-    } else if (tokens[currentToken]->type == types::PARENTHESES && tokens[currentToken]->value == "(") {
-        currentToken++;
-        auto innerExp = expression();
-        if (currentToken >= tokens.size() || tokens[currentToken]->type != types::PARENTHESES || tokens[currentToken]->value != ")") {
-            throw std::runtime_error("Expected closing parenthesis at line " + std::to_string(tokens[currentToken]->line) +
-               " column " + std::to_string(tokens[currentToken]->column));
+void Parser::build(size_t i , Node* n){
+    token* t = tokens[i];
+    if(t->type == types::END){return;}
+
+    if(t->value == "("){
+        build(i+1, n);
+    }else if(t->value == ")"){
+        build(i+1, n->parent);
+    }else{
+
+        Node* next = new Node(t);   
+        next->parent = n;     
+        n->children.push_back(next);
+        cout << next->value << " ";
+        n->child_count++;
+
+        if(next->type == types::OPERATOR){
+            build(i+1, next);
+        }else if(next->type == types::NUMBER){
+            build(i+1, n);    
         }
-        currentToken++;
-        return innerExp;
-    }  else if (tokens[currentToken]->type == types::OPERATOR && tokens[currentToken+1]->type == types::NUMBER) {
-        return std::make_unique<Node>(tokens[currentToken++]);   
+
     }
-    throw std::runtime_error("Unexpected token at line " + std::to_string(tokens[currentToken]->line) +
-        " column " + std::to_string(tokens[currentToken]->column) + ": " + tokens[currentToken]->value);
 }
 
-
-
-double Parser::evaluate(Node* root) {
-    if (root->t->type == types::NUMBER) {
-        return std::stod(root->t->value);
-    } else if (root->t->type == types::OPERATOR) {
-        double leftValue = evaluate(root->children[0].get());
-        double rightValue = evaluate(root->children[1].get());
-
-        if (root->t->value == "+") return leftValue + rightValue;
-        if (root->t->value == "-") return leftValue - rightValue;
-        if (root->t->value == "*") return leftValue * rightValue;
-        if (root->t->value == "/") {
-            if (rightValue == 0) throw std::runtime_error("Runtime error: division by zero.");
-            return leftValue / rightValue;
+double Parser::calculate(Node* op){
+    if(op->value == "*"){
+        double multi = 1;
+        for(Node* n:op->children){
+            if(n->type == types::OPERATOR){
+                multi *= calculate(n);
+            }else{
+                multi *= stod(n->value);
+            }
         }
-    }
-    throw std::runtime_error("Unknown node type in AST.");
-}
+        cout << multi << endl;
+        return multi;
 
-void Parser::printAST(Node* root, std::ostream& out) {
-    if (root->t->type == types::NUMBER) {
-        out << root->t->value;
-    } else if (root->t->type == types::OPERATOR) {
-        out << "(";
-        printAST(root->children[0].get(), out);
-        out << " " << root->t->value << " ";
-        printAST(root->children[1].get(), out);
-        out << ")";
-    } else {
-        throw std::runtime_error("Unknown node type in AST.");
+    }else if(op->value == "/"){
+        double sum = 0;
+        for(Node* n:op->children){
+            if(n->type == types::OPERATOR){
+                sum /= calculate(n);
+            }else{
+                sum /= stod(n->value);
+            }
+        }
+        cout << sum << endl;
+
+        return sum;
+
+    }else if(op->value == "+"){
+        double sum = 0;
+        for(Node* n:op->children){
+            if(n->type == types::OPERATOR){
+                sum += calculate(n);
+            }else{
+                sum += stod(n->value);
+            }
+        }
+        cout << sum << endl;
+
+        return sum;
+
+    }else if(op->value == "-"){
+        double sub = 0;
+        for(Node* n:op->children){
+            if(n->type == types::OPERATOR){
+                sub = calculate(n) - sub;
+            }else{
+                sub = stod(n->value) - sub;
+            }
+        }
+        cout << sub << endl;
+
+        return sub;
     }
+    return 0;
 }

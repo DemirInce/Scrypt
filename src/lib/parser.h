@@ -3,35 +3,32 @@
 
 #include "token.h"
 #include <vector>
-#include <memory> // for std::unique_ptr
 #include <ostream>
 
 struct Node {
-    token* t;
-    std::vector<std::unique_ptr<Node>> children;
+    Node(token* t);
 
-    Node(token* tok): t(tok) {}
+    types type;
+    string value;
+    int child_count = 0;
+    vector<Node*> children;
+    Node* parent = nullptr;
     
-    ~Node() = default; // With std::unique_ptr, we don't need a custom destructor
-
+    ~Node();
+    void print();
 };
 
 class Parser {
-public:
-    Parser(const std::vector<token*>& tokens);
-    
-    std::unique_ptr<Node> parse(); // Updated return type
 
-    double evaluate(Node* root);
-    void printAST(Node* root, std::ostream& out);
+    private:
+        vector<token*> tokens;
+        void build(size_t i, Node* n);
+        double calculate(Node* op);
 
-private:
-    std::vector<token*> tokens;
-    size_t currentToken;
-
-    std::unique_ptr<Node> expression(); // Updated return type
-    std::unique_ptr<Node> term();       // Updated return type
-    std::unique_ptr<Node> factor();     // Updated return type
+    public:
+        Node* head = NULL;
+        Parser(const std::vector<token*>& tokens);
+        void print(Node* root, bool isRoot);
 
 };
 
