@@ -22,6 +22,8 @@ int main(){
         cout << endl;
         cout << p->calculate(p->head) << endl;
         delete p;
+    }else{
+        return 2;
     }
 
     delete l;
