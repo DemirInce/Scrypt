@@ -15,6 +15,7 @@ int main(){
         delete l;
         return 1;
     }
+    delete l;
 
     if(tvec.size() > 1){
         try{
@@ -33,7 +34,6 @@ int main(){
         return 2;
     }
 
-    delete l;
     return 0;
 
 }
