@@ -15,7 +15,6 @@ int main(){
         delete l;
         return 1;
     }
-    delete l;
 
     if(tvec.size() > 1){
         try{
@@ -31,9 +30,12 @@ int main(){
         }
     }else{
         cout << "Unexpected token at line 1 column 1: END\n"; //yes I really did this. I'm lazy
+        delete l;
         return 2;
     }
 
+    delete l;
     return 0;
 
+}
 }
