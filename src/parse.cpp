@@ -16,13 +16,15 @@ int main(){
         return 1;
     }
 
-    Parser* p= new Parser(tvec);
-    p->print(p->head, true);
-    cout << endl;
-    cout << p->calculate(p->head) << endl;
+    if(tvec.size() > 1){
+        Parser* p= new Parser(tvec);
+        p->print(p->head, true);
+        cout << endl;
+        cout << p->calculate(p->head) << endl;
+        delete p;
+    }
 
     delete l;
-    delete p;
     return 0;
 
 }

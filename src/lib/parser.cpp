@@ -60,18 +60,15 @@ void Parser::print(Node* node, bool isRoot = true) {
 
     if (node->type == types::NUMBER) {
         string value = node->value;
-        
-        // Check if the number has a decimal point with all trailing zeros
         size_t decimalPos = value.find('.');
         if (decimalPos != string::npos) {
             size_t nonZeroPos = value.find_last_not_of('0');
             if (nonZeroPos == decimalPos) {
-                // The number has all zeros after the decimal point, so truncate it
                 value = value.substr(0, decimalPos);
             }
         }
-        
         cout << value;
+
     } else if (node->type == types::OPERATOR) {
         if (!isRoot) {
             cout << "(";
