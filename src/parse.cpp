@@ -17,7 +17,8 @@ int main(){
     }
 
     Parser p(tvec);
-
+    p.print(p.head);
+    cout << endl;
 
     delete l;
     return 0;

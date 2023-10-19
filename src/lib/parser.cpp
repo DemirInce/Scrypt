@@ -23,8 +23,7 @@ Parser::Parser(const vector<token*>& tokens){
     Node* n = new Node(tokens[i]);
     head = n;
     build(1, head);
-    cout << endl;
-    cout << calculate(head) << endl;;
+    //cout << calculate(head) << endl;;
 }
 
 void Parser::build(size_t i , Node* n){
@@ -40,7 +39,6 @@ void Parser::build(size_t i , Node* n){
         Node* next = new Node(t);   
         next->parent = n;     
         n->children.push_back(next);
-        cout << next->value << " ";
         n->child_count++;
 
         if(next->type == types::OPERATOR){
@@ -51,6 +49,26 @@ void Parser::build(size_t i , Node* n){
 
     }
 }
+
+void Parser::print(Node* node) {
+    if (node == nullptr) {
+        return;
+    }
+
+    if (node->type == types::NUMBER) {
+        cout << node->value;
+    } else if (node->type == types::OPERATOR) {
+        cout << "(";
+        for (size_t i = 0; i < node->children.size(); i++) {
+            print(node->children[i]);
+            if (i < node->children.size() - 1) {
+                cout << " " << node->value << " ";
+            }
+        }
+        cout << ")";
+    }
+}
+
 
 double Parser::calculate(Node* op){
     if(op->value == "*"){
@@ -92,12 +110,12 @@ double Parser::calculate(Node* op){
         return sum;
 
     }else if(op->value == "-"){
-        double sub = 0;
+        double sub = stod(op->children[1]->value);
         for(Node* n:op->children){
             if(n->type == types::OPERATOR){
-                sub = calculate(n) - sub;
+                sub = sub - calculate(n);
             }else{
-                sub = stod(n->value) - sub;
+                sub -= sub - stod(n->value);
             }
         }
         cout << sub << endl;

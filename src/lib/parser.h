@@ -28,7 +28,7 @@ class Parser {
     public:
         Node* head = NULL;
         Parser(const std::vector<token*>& tokens);
-        void print(Node* root, bool isRoot);
+        void print(Node* node);
 
 };
 
