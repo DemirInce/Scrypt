@@ -1,7 +1,9 @@
 #include "parser.h"
+
 #include <vector>
 #include <iostream>
 #include <numeric>
+#include <stdexcept>
 
 using namespace std;
 
@@ -105,7 +107,8 @@ double Parser::calculate(Node* node) {
                 } else if (node->value == "*") {
                     result *= calculate(node->children[i]);
                 } else if (node->value == "/") {
-                    result /= calculate(node->children[i]);
+                    double step = calculate(node->children[i]);
+                    result /= step;
                 }
             }
         }
