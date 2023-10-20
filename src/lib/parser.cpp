@@ -56,7 +56,7 @@ void Parser::build(size_t i, Node* n) {
         para_count++;
         build(i + 1, n);
     } else if (t->value == ")") {
-        expect = {0, 1 , 0, 1};
+        expect = {1, 1 , 0, 1};
         para_count--;
         build(i + 1, n->parent);
     } else {
