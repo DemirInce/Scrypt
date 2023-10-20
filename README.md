@@ -53,31 +53,3 @@ To utilize this project effectively, follow these usage guidelines:
 
    Lexer lexer;
    std::vector<token*> tokens = lexer.read(input);
-
-Example
-Here's a step-by-step example of how to use the lexer and parser components:
-
-Input expression: (5 + 3) * 2
-
-After tokenization (using the lexer):
-
-Token 1: Type - PARENTHESES, Value - "("
-Token 2: Type - NUMBER, Value - "5"
-Token 3: Type - OPERATOR, Value - "+"
-Token 4: Type - NUMBER, Value - "3"
-Token 5: Type - PARENTHESES, Value - ")"
-Token 6: Type - OPERATOR, Value - "*"
-Token 7: Type - NUMBER, Value - "2"
-Token 8: Type - END, Value - "END"
-After parsing and evaluation (using the parser):
-
-Result: 16
-Error Handling
-Both the lexer and parser components provide robust error handling mechanisms to catch and report syntax errors in the input expressions. This ensures that any issues are identified and addressed promptly, facilitating a smooth parsing process.
-
-Dependencies
-This project relies on the following components:
-
-A C++ compiler compatible with C++11 or later.
-Access to the Standard Template Library (STL).
-An input source containing mathematical expressions.
