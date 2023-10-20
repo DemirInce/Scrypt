@@ -40,10 +40,13 @@ Parser::Parser(const vector<token*>& tokens) {
     try{
         value = calculate(head);
     }catch(string e){
+        all_nodes.clear();
         throw e;
     }catch(const runtime_error& e){
+        all_nodes.clear();
         throw e;
     }
+
     cout << value << endl;
 }
 
