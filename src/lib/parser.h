@@ -3,35 +3,41 @@
 
 #include "token.h"
 #include <vector>
-#include <memory> // for std::unique_ptr
 #include <ostream>
 
 struct Node {
-    token* t;
-    std::vector<std::unique_ptr<Node>> children;
+    Node(token* t);
 
-    Node(token* tok): t(tok) {}
-    
-    ~Node() = default; // With std::unique_ptr, we don't need a custom destructor
+    types type;
+    string value;
+    int child_count = 0;
+    vector<Node*> children;
+    Node* parent = nullptr;
 
+    int token_line;
+    int token_column;
 };
 
 class Parser {
-public:
-    Parser(const std::vector<token*>& tokens);
-    
-    std::unique_ptr<Node> parse(); // Updated return type
 
-    double evaluate(Node* root);
-    void printAST(Node* root, std::ostream& out);
+    private:
+        vector<token*> tokens;
+        vector<Node*> all_nodes;
 
-private:
-    std::vector<token*> tokens;
-    int currentToken;
+        vector<bool> expect = {1, 0 ,1, 0}; // (open-p, close-p, o, n)
+        int para_count;
 
-    std::unique_ptr<Node> expression(); // Updated return type
-    std::unique_ptr<Node> term();       // Updated return type
-    std::unique_ptr<Node> factor();     // Updated return type
+        bool check(token* t);
+
+    public:
+        Parser(const std::vector<token*>& tokens);
+        ~Parser();
+
+        Node* head = NULL;
+
+        void build(size_t i, Node* n);
+        double calculate(Node* node);
+        void print(Node* node, bool isRoot);
 
 };
 

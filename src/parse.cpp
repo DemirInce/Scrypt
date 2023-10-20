@@ -12,25 +12,32 @@ int main(){
         tvec = l->read(cin);
     } catch (std::string error) {
         std::cout << error << std::endl;
-        delete l;
         return 1;
     }
 
-    Parser p(tvec);
-    try {
-        auto ast = p.parse();
-        p.printAST(ast.get(), std::cout);
-        std::cout << std::endl;
-        std::cout << p.evaluate(ast.get()) << std::endl;
-    } catch (std::runtime_error& e) {
-        std::cout << e.what() << std::endl;
-        if (std::string(e.what()).find("Unexpected token") != std::string::npos || std::string(e.what()).find("closing") != std::string::npos) {
+    if(tvec.size() > 1){
+        Parser* p= new Parser(tvec);
+        try{
+            p->build(1, p->head);
+            p->print(p->head, true);
+            cout << endl;
+            cout << p->calculate(p->head) << endl;
+        }catch(string e){
+            cout << e << endl;
             delete l;
+            delete p;
             return 2;
-        } else if (std::string(e.what()).find("division by zero") != std::string::npos) {
-            delete l;
+        }catch(const runtime_error& e){
+            cout << e.what() << endl;
+            delete l;        
+            delete p;
             return 3;
         }
+        delete p;
+    }else{
+        cout << "Unexpected token at line " << tvec[0]->line << " column " << tvec[0]->column << ": END\n"; //yes I really did this. I'm lazy
+        delete l;
+        return 2;
     }
 
     delete l;
