@@ -37,19 +37,3 @@ To get started with this project, follow these installation steps:
 2. Integrate both `parser.cpp` and `lexer.cpp` into your C++ project. Ensure that they are compiled together to guarantee the proper functioning of the mathematical expression parser.
 
 3. Set up an input stream containing the mathematical expressions you wish to tokenize and parse.
-
-## Usage
-
-To utilize this project effectively, follow these usage guidelines:
-
-1. Utilize the `Lexer` class to tokenize mathematical expressions:
-
-   ```cpp
-   #include "lexer.h"
-   #include <fstream>
-   #include <vector>
-
-   std::ifstream input("input.txt");
-
-   Lexer lexer;
-   std::vector<token*> tokens = lexer.read(input);
