@@ -5,6 +5,12 @@
 #include <vector>
 #include <ostream>
 
+enum class ParserError {
+    NO_ERROR,
+    DIVIDE_BY_ZERO,
+    UNEXPECTED_TOKEN
+};
+
 struct Node {
     Node(token* t);
 
@@ -13,6 +19,9 @@ struct Node {
     int child_count = 0;
     vector<Node*> children;
     Node* parent = nullptr;
+
+    int token_line;
+    int token_column;
 };
 
 class Parser {
@@ -21,6 +30,8 @@ class Parser {
         vector<token*> tokens;
         vector<Node*> all_nodes;
         void build(size_t i, Node* n);
+
+        ParserError error = ParserError::NO_ERROR;
 
     public:
         Parser(const std::vector<token*>& tokens);

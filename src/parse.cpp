@@ -19,13 +19,12 @@ int main(){
     if(tvec.size() > 1){
         try{
             Parser* p= new Parser(tvec);
-            double value = p->calculate(p->head);
-            p->print(p->head, true);
-            cout << endl;
-            cout << value << endl;
             delete p;
         }catch(string e){
             cout << e << endl;
+            return 2;
+        }catch(runtime_error e){
+            cout << e.what() << endl;
             return 3;
         }
     }else{

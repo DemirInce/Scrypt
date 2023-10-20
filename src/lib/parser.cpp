@@ -10,18 +10,39 @@ using namespace std;
 Node::Node(token* t) {
     this->value = t->value;
     this->type = t->type;
+    this->token_line = t->line;
+    this->token_column = t->column;
 }
 
 Parser::Parser(const vector<token*>& tokens) {
     this->tokens = tokens;
     size_t i = 0; 
-    while (tokens[i]->type == types::PARENTHESES) {
+    while (i < tokens.size() && tokens[i]->type == types::PARENTHESES) {
         i++;
     }
+
+    if (i >= tokens.size() || tokens[i]->type == types::END) {
+        error = ParserError::UNEXPECTED_TOKEN;
+        return;
+    }
+
     Node* n = new Node(tokens[i]);
     all_nodes.push_back(n);
     head = n;
     build(1, head);
+    double value = 0;
+
+    print(head, true);
+    cout << endl;
+
+    try{
+        value = calculate(head);
+    }catch(string e){
+        throw e;
+    }catch(runtime_error e){
+        throw e;
+    }
+    cout << value << endl;
 }
 
 Parser::~Parser(){
@@ -30,28 +51,33 @@ Parser::~Parser(){
     }
 }
 
-void Parser::build(size_t i , Node* n){
+void Parser::build(size_t i, Node* n) {
     token* t = tokens[i];
-    if(t->type == types::END){return;}
+    if (t->type == types::END) {
+        return;
+    }
 
-    if(t->value == "("){
-        build(i+1, n);
-    }else if(t->value == ")"){
-        build(i+1, n->parent);
-    }else{
+    if (t->value == "(") {
+        build(i + 1, n);
+    } else if (t->value == ")") {
+        build(i + 1, n->parent);
+    } else {
+        if (t->type != types::OPERATOR && t->type != types::NUMBER) {
+            error = ParserError::UNEXPECTED_TOKEN;
+            return;
+        }
 
-        Node* next = new Node(t);  
-        all_nodes.push_back(next); 
-        next->parent = n;     
+        Node* next = new Node(t);
+        all_nodes.push_back(next);
+        next->parent = n;
         n->children.push_back(next);
         n->child_count++;
 
-        if(next->type == types::OPERATOR){
-            build(i+1, next);
-        }else if(next->type == types::NUMBER){
-            build(i+1, n);    
+        if (next->type == types::OPERATOR) {
+            build(i + 1, next);
+        } else if (next->type == types::NUMBER) {
+            build(i + 1, n);
         }
-
     }
 }
 
@@ -108,12 +134,16 @@ double Parser::calculate(Node* node) {
                     result *= calculate(node->children[i]);
                 } else if (node->value == "/") {
                     double step = calculate(node->children[i]);
+                    if (step == 0) {
+                        throw runtime_error("Runtime error: division by zero.");
+                    }
                     result /= step;
                 }
             }
         }
         return result;
     } else {
+        error = ParserError::UNEXPECTED_TOKEN;
         return 0.0;
     }
 }
