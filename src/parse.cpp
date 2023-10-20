@@ -16,24 +16,30 @@ int main(){
     }
 
     if(tvec.size() > 1){
-        Parser* p= new Parser(tvec);
         try{
-            p->build(1, p->head);
-            p->print(p->head, true);
-            cout << endl;
-            cout << p->calculate(p->head) << endl;
+            Parser* p= new Parser(tvec);
+            try{
+                p->build(1, p->head);
+                p->print(p->head, true);
+                cout << endl;
+                cout << p->calculate(p->head) << endl;
+            }catch(string e){
+                cout << e << endl;
+                delete l;
+                delete p;
+                return 2;
+            }catch(const runtime_error& e){
+                cout << e.what() << endl;
+                delete l;        
+                delete p;
+                return 3;
+            }
+            delete p;
         }catch(string e){
             cout << e << endl;
             delete l;
-            delete p;
             return 2;
-        }catch(const runtime_error& e){
-            cout << e.what() << endl;
-            delete l;        
-            delete p;
-            return 3;
         }
-        delete p;
     }else{
         cout << "Unexpected token at line " << tvec[0]->line << " column " << tvec[0]->column << ": END\n"; //yes I really did this. I'm lazy
         delete l;
