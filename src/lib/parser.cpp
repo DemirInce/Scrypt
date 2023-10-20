@@ -24,12 +24,12 @@ Parser::Parser(const vector<token*>& tokens) {
         para_count++;
         i++;
     }
-    if(i == 0){
-        throw string("Unexpected token at line ") + to_string(tokens[i]->line) 
-        + " column " + to_string(tokens[i]->column) + ": " + tokens[i]->value;  
+    token* t = tokens[i];
+    if(!check(t)){
+        throw string("Unexpected token at line ") + to_string(t->line) 
+        + " column " + to_string(t->column) + ": " + t->value;
     }
-    
-    Node* n = new Node(tokens[i]);
+    Node* n = new Node(t);
     all_nodes.push_back(n);
     head = n;
 }

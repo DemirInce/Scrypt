@@ -17,24 +17,24 @@ int main(){
 
     if(tvec.size() > 1){
         try{
-            Parser* p= new Parser(tvec);
-            try{
-                p->build(1, p->head);
-                p->print(p->head, true);
-                cout << endl;
-                cout << p->calculate(p->head) << endl;
-            }catch(string e){
-                cout << e << endl;
-                delete l;
-                delete p;
-                return 2;
-            }catch(const runtime_error& e){
-                cout << e.what() << endl;
-                delete l;        
-                delete p;
-                return 3;
-            }
+        Parser* p= new Parser(tvec);
+        try{
+            p->build(1, p->head);
+            p->print(p->head, true);
+            cout << endl;
+            cout << p->calculate(p->head) << endl;
+        }catch(string e){
+            cout << e << endl;
+            delete l;
             delete p;
+            return 2;
+        }catch(const runtime_error& e){
+            cout << e.what() << endl;
+            delete l;        
+            delete p;
+            return 3;
+        }
+        delete p;
         }catch(string e){
             cout << e << endl;
             delete l;
