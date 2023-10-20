@@ -22,7 +22,8 @@ Parser::Parser(const vector<token*>& tokens) {
     }
 
     if (i >= tokens.size() || tokens[i]->type == types::END) {
-        throw "";
+        token* t = tokens[i];
+        throw string("Unexpected token at line ") + to_string(t->line) + " column " + to_string(t->column) + ": " + t->value;
         return;
     }
 
@@ -39,7 +40,7 @@ Parser::Parser(const vector<token*>& tokens) {
         value = calculate(head);
     }catch(string e){
         throw e;
-    }catch(runtime_error e){
+    }catch(const runtime_error& e){
         throw e;
     }
     cout << value << endl;
