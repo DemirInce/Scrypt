@@ -40,16 +40,18 @@ void Parser::build(size_t i, Node* n) {
     if (t->type == types::END) {
         return;
     }
-    if(!check(t)){
+    if(!check(t) || (para_count == 0 && t->type != types::END)){
         throw string("Unexpected token at line ") + to_string(t->line) 
         + " column " + to_string(t->column) + ": " + t->value;
     }
 
     if (t->value == "(") {
-        expect = {0, 1 ,0};
+        expect = {0, 0 , 1, 0};
+        para_count++;
         build(i + 1, n);
     } else if (t->value == ")") {
-        expect = {1, 0 ,1};
+        expect = {0, 1 , 0, 1};
+        para_count--;
         build(i + 1, n->parent);
     } else {
 
@@ -60,10 +62,10 @@ void Parser::build(size_t i, Node* n) {
         n->child_count++;
 
         if (next->type == types::OPERATOR) {
-            expect = {1, 0 ,1};
+            expect = {1, 0 , 0, 1};
             build(i + 1, next);
         } else if (next->type == types::NUMBER) {
-            expect = {1, 0 ,1};
+            expect = {1, 1 , 0, 1};
             build(i + 1, n);
         }
     }
@@ -137,11 +139,13 @@ double Parser::calculate(Node* node) {
 
 bool Parser::check(token* t){
     types type = t->type;
-    if(type == types::PARENTHESES && expect[0] == false){
+    if(t->value == "(" && expect[0] == false){
         return false;
-    }else if(type == types::OPERATOR && expect[1] == false){
+    }else if(t->value == ")" && expect[1] == false){
         return false;
-    }else if(type == types::NUMBER && expect[2] == false){
+    }else if(type == types::OPERATOR && expect[2] == false){
+        return false;
+    }else if(type == types::NUMBER && expect[3] == false){
         return false;
     }else{
         return true;

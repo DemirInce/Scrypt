@@ -25,7 +25,7 @@ int main(){
         }catch(string e){
             cout << e << endl;
             delete l;
-            //delete p;
+            delete p;
             return 2;
         }catch(const runtime_error& e){
             cout << e.what() << endl;
