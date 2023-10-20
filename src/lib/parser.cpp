@@ -29,6 +29,7 @@ Parser::Parser(const vector<token*>& tokens) {
         throw string("Unexpected token at line ") + to_string(t->line) 
         + " column " + to_string(t->column) + ": " + t->value;
     }
+    expect = {1, 0 , 1, 0};
     Node* n = new Node(t);
     all_nodes.push_back(n);
     head = n;
