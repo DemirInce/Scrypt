@@ -25,7 +25,7 @@ Parser::Parser(const vector<token*>& tokens) {
         i++;
     }
     token* t = tokens[i];
-    if(!check(t)){
+    if(!check(t) && i == 0){
         throw string("Unexpected token at line ") + to_string(t->line) 
         + " column " + to_string(t->column) + ": " + t->value;
     }

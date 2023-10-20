@@ -24,7 +24,7 @@ class Parser {
         vector<token*> tokens;
         vector<Node*> all_nodes;
 
-        vector<bool> expect = {1, 0 ,0, 0}; // (open-p, close-p, o, n)
+        vector<bool> expect = {1, 0 , 0, 0}; // (open-p, close-p, o, n)
         int para_count;
 
         bool check(token* t);
