@@ -22,7 +22,7 @@ Parser::Parser(const vector<token*>& tokens) {
     }
 
     if (i >= tokens.size() || tokens[i]->type == types::END) {
-        error = ParserError::UNEXPECTED_TOKEN;
+        throw "";
         return;
     }
 

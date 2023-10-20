@@ -23,7 +23,7 @@ int main(){
         }catch(string e){
             cout << e << endl;
             return 2;
-        }catch(runtime_error e){
+        }catch(const runtime_error& e){
             cout << e.what() << endl;
             return 3;
         }
