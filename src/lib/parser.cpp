@@ -26,23 +26,6 @@ Parser::Parser(const vector<token*>& tokens) {
     Node* n = new Node(tokens[i]);
     all_nodes.push_back(n);
     head = n;
-    build(1, head);
-    double value = 0;
-
-    print(head, true);
-    cout << endl;
-
-    try{
-        value = calculate(head);
-    }catch(string e){
-        all_nodes.clear();
-        throw e;
-    }catch(const runtime_error& e){
-        all_nodes.clear();
-        throw e;
-    }
-
-    cout << value << endl;
 }
 
 Parser::~Parser(){

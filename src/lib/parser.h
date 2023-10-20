@@ -23,7 +23,6 @@ class Parser {
     private:
         vector<token*> tokens;
         vector<Node*> all_nodes;
-        void build(size_t i, Node* n);
 
         vector<bool> expect = {1, 1 ,0}; // (p, o, n)
         bool check(token* t);
@@ -33,6 +32,8 @@ class Parser {
         ~Parser();
 
         Node* head = NULL;
+        
+        void build(size_t i, Node* n);
         double calculate(Node* node);
         void print(Node* node, bool isRoot);
 
