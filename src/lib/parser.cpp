@@ -7,6 +7,8 @@
 
 using namespace std;
 
+#define HERE cout << "here\n";
+
 Node::Node(token* t) {
     this->value = t->value;
     this->type = t->type;
@@ -24,7 +26,6 @@ Parser::Parser(const vector<token*>& tokens) {
     if (i >= tokens.size() || tokens[i]->type == types::END) {
         token* t = tokens[i];
         throw string("Unexpected token at line ") + to_string(t->line) + " column " + to_string(t->column) + ": " + t->value;
-        return;
     }
 
     Node* n = new Node(tokens[i]);
@@ -52,6 +53,7 @@ Parser::~Parser(){
     }
 }
 
+
 void Parser::build(size_t i, Node* n) {
     token* t = tokens[i];
     if (t->type == types::END) {
@@ -63,10 +65,6 @@ void Parser::build(size_t i, Node* n) {
     } else if (t->value == ")") {
         build(i + 1, n->parent);
     } else {
-        if (t->type != types::OPERATOR && t->type != types::NUMBER) {
-            error = ParserError::UNEXPECTED_TOKEN;
-            return;
-        }
 
         Node* next = new Node(t);
         all_nodes.push_back(next);
@@ -118,7 +116,6 @@ double Parser::calculate(Node* node) {
     if (node == nullptr) {
         return 0.0;
     }
-
     if (node->type == types::NUMBER) {
         return stod(node->value);
     } else if (node->type == types::OPERATOR) {

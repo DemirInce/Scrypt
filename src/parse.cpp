@@ -12,7 +12,6 @@ int main(){
         tvec = l->read(cin);
     } catch (std::string error) {
         std::cout << error << std::endl;
-        delete l;
         return 1;
     }
 
@@ -22,9 +21,11 @@ int main(){
             delete p;
         }catch(string e){
             cout << e << endl;
+            delete l;
             return 2;
         }catch(const runtime_error& e){
             cout << e.what() << endl;
+            delete l;
             return 3;
         }
     }else{
