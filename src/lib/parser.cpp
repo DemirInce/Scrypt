@@ -23,11 +23,6 @@ Parser::Parser(const vector<token*>& tokens) {
         i++;
     }
 
-    if (i >= tokens.size() || tokens[i]->type == types::END) {
-        token* t = tokens[i];
-        throw string("Unexpected token at line ") + to_string(t->line) + " column " + to_string(t->column) + ": " + t->value;
-    }
-
     Node* n = new Node(tokens[i]);
     all_nodes.push_back(n);
     head = n;
@@ -62,10 +57,16 @@ void Parser::build(size_t i, Node* n) {
     if (t->type == types::END) {
         return;
     }
+    if(!check(t)){
+        throw string("Unexpected token at line ") + to_string(t->line) 
+        + " column " + to_string(t->column) + ": " + t->value;
+    }
 
     if (t->value == "(") {
+        expect = {0, 1 ,0};
         build(i + 1, n);
     } else if (t->value == ")") {
+        expect = {1, 0 ,1};
         build(i + 1, n->parent);
     } else {
 
@@ -76,8 +77,10 @@ void Parser::build(size_t i, Node* n) {
         n->child_count++;
 
         if (next->type == types::OPERATOR) {
+            expect = {1, 0 ,1};
             build(i + 1, next);
         } else if (next->type == types::NUMBER) {
+            expect = {1, 0 ,1};
             build(i + 1, n);
         }
     }
@@ -144,7 +147,20 @@ double Parser::calculate(Node* node) {
         }
         return result;
     } else {
-        error = ParserError::UNEXPECTED_TOKEN;
-        return 0.0;
+        throw string("Unexpected token at line ") + to_string(node->token_line) 
+        + " column " + to_string(node->token_column) + ": " + node->value;
+    }
+}
+
+bool Parser::check(token* t){
+    types type = t->type;
+    if(type == types::PARENTHESES && expect[0] == false){
+        return false;
+    }else if(type == types::OPERATOR && expect[1] == false){
+        return false;
+    }else if(type == types::NUMBER && expect[2] == false){
+        return false;
+    }else{
+        return true;
     }
 }
