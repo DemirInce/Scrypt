@@ -38,8 +38,11 @@ Parser::~Parser(){
 
 
 void Parser::build(size_t i, Node* n) {
-
     token* t = tokens[i];
+    if(i == 1 && n->value != "("){
+        throw string("Unexpected token at line ") + to_string(n->token_line) 
+        + " column " + to_string(n->token_column) + ": " + n->value;          
+    }
     if (t->type == types::END) {
         if(para_count != 0){
             throw string("Unexpected token at line ") + to_string(t->line) 
@@ -47,7 +50,7 @@ void Parser::build(size_t i, Node* n) {
         }
         return;
     }
-    if(!check(t) || (para_count == 0 && t->type != types::END) || para_count < 0){
+    if(!check(t) || (para_count == 0 && t->type != types::END)){
         throw string("Unexpected token at line ") + to_string(t->line) 
         + " column " + to_string(t->column) + ": " + t->value;
     }
