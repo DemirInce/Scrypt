@@ -24,13 +24,8 @@ Parser::Parser(const vector<token*>& tokens) {
         para_count++;
         i++;
     }
-    token* t = tokens[i];
-    if(!check(t) && i == 0){
-        throw string("Unexpected token at line ") + to_string(t->line) 
-        + " column " + to_string(t->column) + ": " + t->value;
-    }
-    expect = {1, 0 , 1, 0};
-    Node* n = new Node(t);
+
+    Node* n = new Node(tokens[i]);
     all_nodes.push_back(n);
     head = n;
 }
@@ -43,6 +38,7 @@ Parser::~Parser(){
 
 
 void Parser::build(size_t i, Node* n) {
+
     token* t = tokens[i];
     if (t->type == types::END) {
         if(para_count != 0){
@@ -51,7 +47,7 @@ void Parser::build(size_t i, Node* n) {
         }
         return;
     }
-    if(!check(t) || (para_count == 0 && t->type != types::END)){
+    if(!check(t) || (para_count == 0 && t->type != types::END) || para_count < 0){
         throw string("Unexpected token at line ") + to_string(t->line) 
         + " column " + to_string(t->column) + ": " + t->value;
     }

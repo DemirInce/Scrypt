@@ -16,7 +16,6 @@ int main(){
     }
 
     if(tvec.size() > 1){
-        try{
         Parser* p= new Parser(tvec);
         try{
             p->build(1, p->head);
@@ -35,11 +34,6 @@ int main(){
             return 3;
         }
         delete p;
-        }catch(string e){
-            cout << e << endl;
-            delete l;
-            return 2;
-        }
     }else{
         cout << "Unexpected token at line " << tvec[0]->line << " column " << tvec[0]->column << ": END\n"; //yes I really did this. I'm lazy
         delete l;
