@@ -21,21 +21,9 @@ Parser::Parser(const vector<token*>& tokens) {
     size_t i = 0; 
     para_count = 0;
     
-    while (i < tokens.size() && tokens[i]->type == types::PARENTHESES) {
-        expect = {0, 0, 1, 0, 0, 1};
-        para_count++;
-        i++;
-    }
+    i = headmaker(i);
 
-    token* t = tokens[i];
-    if(!check(t)){
-        throw string("Unexpected token at line ") + to_string(t->line) 
-        + " column " + to_string(t->column) + ": " + t->value;          
-    }
-
-    Node* n = new Node(t);
-    all_nodes.push_back(n);
-    head = n;
+    build(para_count, head[0]);
 }
 
 Parser::~Parser(){
@@ -46,21 +34,27 @@ Parser::~Parser(){
 
 
 void Parser::build(size_t i, Node* n) {
-
     token* t = tokens[i];
-    if (t->type == types::END) {                                                    // end handling
+    if (t->type == types::END) {  
         if(para_count != 0){
             throw string("Unexpected token at line ") + to_string(t->line) 
             + " column " + to_string(t->column) + ": " + t->value;            
         }
         return;
     }
-    if(!check(t) || (para_count == 0 && t->type != types::END) || para_count < 0){  // unexpected handling
+    if((para_count == 0 && t->type != types::END)){
+        expect = {1, 0 , 0, 0, 0, 0};
+        para_count = 0;
+        i = headmaker(i);
+        build(i, head[head.size()-1]);
+        return;
+    }
+    if(!check(t) || para_count < 0){ 
         throw string("Unexpected token at line ") + to_string(t->line) 
         + " column " + to_string(t->column) + ": " + t->value;
     }
 
-    if (t->value == "(") {                                                          // paranthesis handling               
+    if (t->value == "(") {                                                                 
         expect = {0, 0, 1, 0, 0, 1};  // (open-p, close-p, o, n, var, a)
         para_count++;
         build(i + 1, n);
@@ -68,7 +62,7 @@ void Parser::build(size_t i, Node* n) {
         expect = {1, 1, 0, 1, 1, 0};
         para_count--;
         build(i + 1, n->parent);
-    } else {                                                                        // tree building 
+    } else {                                                                       
 
         Node* next = new Node(t);
         all_nodes.push_back(next);
@@ -131,12 +125,10 @@ double Parser::calculate(Node* node) {
     if (node->type == types::NUMBER) {
         return stod(node->value);
     } else if (node->type == types::ASSIGNMENT){
-        for(Node* n : node->children){
-            cout << n->value << endl;
-        }
-        return assign(node, 1);
-    }
-    else if (node->type == types::OPERATOR) {
+        return assign(node->children[0], 0);
+    } else if (node->type == types::VARIABLE){
+        return variables[node->value];
+    } else if (node->type == types::OPERATOR) {
         double result = 0.0;
         for (size_t i = 0; i < node->children.size(); i++) {
             if (i == 0) {
@@ -165,15 +157,22 @@ double Parser::calculate(Node* node) {
 }
 
 double Parser::assign(Node* a_node, int i){
+    cout << a_node->value << endl;
     Node* child = a_node->children[i];
-    cout << child->value << endl;
-    if(child->type == types::VARIABLE){
-        variables[child->value] = assign(a_node, i+1);
+    vector<string> variable_buffer;
+    while(child->type == types::VARIABLE){
+        variable_buffer.push_back(child->value);
+        i++;
+        child = a_node->children[i];
     }
-    return calculate(child);
+    double value = calculate(a_node->children[i]);
+    for(string s:variable_buffer){
+        variables[s] = value;
+    }
+    return value;
 }
 
-bool Parser::check(token* t){
+bool Parser::check(token* t){ // (open-p, close-p, o, n, var, a)
     types type = t->type;
     if(t->value == "(" && expect[0] == false){
         return false;
@@ -183,7 +182,31 @@ bool Parser::check(token* t){
         return false;
     }else if(type == types::NUMBER && expect[3] == false){
         return false;
+    }else if(type == types::VARIABLE && expect[4] == false){
+        return false;
+    }else if(type == types::ASSIGNMENT && expect[5] == false){
+        return false;
     }else{
         return true;
     }
+}
+
+size_t Parser::headmaker(size_t i){
+    while (i < tokens.size() && tokens[i]->type == types::PARENTHESES) {
+        expect = {0, 0, 1, 0, 0, 1};
+        para_count++;
+        i++;
+    }
+
+    token* t = tokens[i];
+    if(!check(t)){
+        throw string("Unexpected token at line ") + to_string(t->line) 
+        + " column " + to_string(t->column) + ": " + t->value;          
+    }
+
+    Node* n = new Node(t);
+    all_nodes.push_back(n);
+    head.push_back(n);
+
+    return i;
 }

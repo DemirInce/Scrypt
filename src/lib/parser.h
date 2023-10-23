@@ -32,12 +32,13 @@ class Parser {
 
         bool check(token* t);
         double assign(Node* a_node, int i);
+        size_t headmaker(size_t i);
 
     public:
         Parser(const std::vector<token*>& tokens);
         ~Parser();
 
-        Node* head = NULL;
+        vector<Node*> head;
 
         void build(size_t i, Node* n);
         double calculate(Node* node);
