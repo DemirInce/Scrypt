@@ -125,7 +125,12 @@ double Parser::calculate(Node* node) {
     } else if (node->type == types::ASSIGNMENT){
         return assign(node->children[0], 0);
     } else if (node->type == types::VARIABLE){
-        return variables[node->value];
+        if(variables.find(node->value) != variables.end()){
+            return variables[node->value];
+        }else{
+            throw string("Unexpected token at line ") + to_string(node->token_line) 
+            + " column " + to_string(node->token_column) + ": " + node->value;
+        }
     } else if (node->type == types::OPERATOR) {
         double result = 0.0;
         for (size_t i = 0; i < node->children.size(); i++) {
