@@ -22,8 +22,6 @@ Parser::Parser(const vector<token*>& tokens) {
     para_count = 0;
     
     i = headmaker(i);
-
-    build(para_count, head[0]);
 }
 
 Parser::~Parser(){

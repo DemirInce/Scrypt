@@ -19,6 +19,7 @@ int main(){
         try{
             Parser* p= new Parser(tvec);
             try{
+                p->build(1, p->head[0]);
                 for(Node* head:p->head){
                     p->print(head, true);
                     cout << endl;
