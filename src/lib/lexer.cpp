@@ -28,15 +28,21 @@ vector<token*> Lexer::read(istream& i) {
         types type;
         string value;
 
-        if ((c >= 48 && c <= 57) || c == '.') {
+        if ((c >= '0' && c <= '9') || c == '.') {
             type = types::NUMBER;
             value = number(i, c, column, line);
-        } else if (c >= 42 && c <= 47) {
+        } else if (c == '*' || c == '+' || c == '-' || c == '/') {
             type = types::OPERATOR;
             value += c;
-        } else if (c >= 40 && c <= 41) {
+        } else if (c >= '(' && c <= ')') {
             type = types::PARENTHESES;
             value += c;
+        } else if (c == '=') {
+            type = types::ASSIGNMENT;
+            value += c;
+        } else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c == '_')) {
+            type = types::VARIABLE;
+            value = variable(i, c); 
         } else if (c != EOF) {
             throw "Syntax error on line " + to_string(line) + " column " + to_string(column) + ".";
         } else {
@@ -81,7 +87,20 @@ string Lexer::number(istream& i, char c, int column, int line) {
     return buffer;
 }
 
- Lexer::~Lexer(){
+string Lexer::variable(istream& i, char c){
+    string buffer;
+    buffer += c;
+
+    char p = i.peek();
+    while((p >= 'A' && p <= 'Z') || (p >= 'a' && p <= 'z') || (p == '_') || (p >= '0' && p <= '9')){
+        buffer += i.get();
+        p = i.peek();    
+    }
+
+    return buffer;
+}
+
+Lexer::~Lexer(){
         for (token* t : tvec) {
             delete t;
         }

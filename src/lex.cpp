@@ -17,7 +17,6 @@ int main(){
     } catch (string error) {
         cout << error << endl;
         return 1;
-
     }
 
     for(token* t:tvec){

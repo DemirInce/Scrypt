@@ -6,6 +6,8 @@
 using namespace std;
 
 enum class types{
+    VARIABLE,
+    ASSIGNMENT,
     NUMBER,
     OPERATOR,
     PARENTHESES,

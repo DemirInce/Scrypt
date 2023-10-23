@@ -20,12 +20,20 @@ Parser::Parser(const vector<token*>& tokens) {
     this->tokens = tokens;
     size_t i = 0; 
     para_count = 0;
+    
     while (i < tokens.size() && tokens[i]->type == types::PARENTHESES) {
+        expect = {0, 0 , 1, 0};
         para_count++;
         i++;
     }
 
-    Node* n = new Node(tokens[i]);
+    token* t = tokens[i];
+    if(!check(t)){
+        throw string("Unexpected token at line ") + to_string(t->line) 
+        + " column " + to_string(t->column) + ": " + t->value;          
+    }
+
+    Node* n = new Node(t);
     all_nodes.push_back(n);
     head = n;
 }

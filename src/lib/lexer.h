@@ -9,6 +9,7 @@ public:
 
     vector<token*> read(istream& i);
     string number(istream& i, char c, int column, int line);
+    string variable(istream& i, char c);
     ~Lexer();
 
 };
