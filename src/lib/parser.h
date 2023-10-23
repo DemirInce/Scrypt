@@ -4,6 +4,7 @@
 #include "token.h"
 #include <vector>
 #include <ostream>
+#include <map>
 
 struct Node {
     Node(token* t);
@@ -24,10 +25,13 @@ class Parser {
         vector<token*> tokens;
         vector<Node*> all_nodes;
 
-        vector<bool> expect = {1, 0 , 0, 0}; // (open-p, close-p, o, n)
+        map<string, double> variables;
+
+        vector<bool> expect = {1, 0 , 0, 0, 0, 0}; // (open-p, close-p, o, n, var, a)
         int para_count;
 
         bool check(token* t);
+        double assign(Node* a_node, int i);
 
     public:
         Parser(const std::vector<token*>& tokens);
@@ -38,6 +42,7 @@ class Parser {
         void build(size_t i, Node* n);
         double calculate(Node* node);
         void print(Node* node, bool isRoot);
+
 
 };
 
