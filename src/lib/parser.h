@@ -41,7 +41,7 @@ class Parser {
         vector<Node*> head;
 
         void build(size_t i, Node* n);
-        double calculate(Node* node);
+        double calculate(Node* node, bool isRoot);
         void print(Node* node, bool isRoot);
 
 

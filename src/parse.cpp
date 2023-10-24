@@ -23,7 +23,7 @@ int main(){
                 for(Node* head:p->head){
                     p->print(head, true);
                     cout << endl;
-                    cout << p->calculate(head) << endl;
+                    cout << p->calculate(head, true) << endl;
                 }
             }catch(string e){
                 cout << e << endl;

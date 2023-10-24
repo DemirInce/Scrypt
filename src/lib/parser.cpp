@@ -116,14 +116,18 @@ void Parser::print(Node* node, bool isRoot = true) {
     }
 }
 
-double Parser::calculate(Node* node) {
+double Parser::calculate(Node* node, bool isRoot) {
     if (node == nullptr) {
         return 0.0;
     }
     if (node->type == types::NUMBER) {
         return stod(node->value);
     } else if (node->type == types::ASSIGNMENT){
-        return assign(node->children[0], 0);
+        if(isRoot){
+            return assign(node->children[0], 0);
+        }else{
+            return assign(node, 0);
+        }
     } else if (node->type == types::VARIABLE){
         if(variables.find(node->value) != variables.end()){
             return variables[node->value];
@@ -135,16 +139,16 @@ double Parser::calculate(Node* node) {
         double result = 0.0;
         for (size_t i = 0; i < node->children.size(); i++) {
             if (i == 0) {
-                result = calculate(node->children[i]);
+                result = calculate(node->children[i], false);
             } else {
                 if (node->value == "+") {
-                    result += calculate(node->children[i]);
+                    result += calculate(node->children[i], false);
                 } else if (node->value == "-") {
-                    result -= calculate(node->children[i]);
+                    result -= calculate(node->children[i], false);
                 } else if (node->value == "*") {
-                    result *= calculate(node->children[i]);
+                    result *= calculate(node->children[i], false);
                 } else if (node->value == "/") {
-                    double step = calculate(node->children[i]);
+                    double step = calculate(node->children[i], false);
                     if (step == 0) {
                         throw runtime_error("Runtime error: division by zero.");
                     }
@@ -160,7 +164,6 @@ double Parser::calculate(Node* node) {
 }
 
 double Parser::assign(Node* a_node, int i){
-    cout << a_node->value << endl;
     Node* child = a_node->children[i];
     vector<string> variable_buffer;
     while(child->type == types::VARIABLE){
@@ -168,7 +171,7 @@ double Parser::assign(Node* a_node, int i){
         i++;
         child = a_node->children[i];
     }
-    double value = calculate(a_node->children[i]);
+    double value = calculate(a_node->children[i], false);
     for(string s:variable_buffer){
         variables[s] = value;
     }
