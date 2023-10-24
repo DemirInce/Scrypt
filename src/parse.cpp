@@ -21,9 +21,10 @@ int main(){
             try{
                 p->build(1, p->head[0]);
                 for(Node* head:p->head){
+                    double result = p->calculate(head, true);
                     p->print(head, true);
                     cout << endl;
-                    cout << p->calculate(head, true) << endl;
+                    cout << result << endl;
                 }
             }catch(string e){
                 cout << e << endl;
