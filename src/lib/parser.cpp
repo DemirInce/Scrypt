@@ -166,7 +166,11 @@ double Parser::calculate(Node* node, bool isRoot) {
 double Parser::assign(Node* a_node, int i){
     Node* child = a_node->children[i];
     vector<string> variable_buffer;
-    while(child->type == types::VARIABLE){
+    while(child != a_node->children[a_node->child_count-1]){
+        if(child->type != types::VARIABLE){
+             throw string("Unexpected token at line ") + to_string(child->token_line) 
+            + " column " + to_string(child->token_column) + ": " + child->value;
+        }
         variable_buffer.push_back(child->value);
         i++;
         child = a_node->children[i];
