@@ -207,7 +207,7 @@ bool Parser::check(token* t){ // (open-p, close-p, o, n, var, a)
 
 size_t Parser::headmaker(size_t i){
     while (i < tokens.size() && tokens[i]->type == types::PARENTHESES) {
-        expect = {0, 0, 1, 1, 0, 1};
+        expect = {0, 0, 1, 0, 0, 1};
         para_count++;
         i++;
     }
