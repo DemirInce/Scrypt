@@ -30,6 +30,8 @@ class Parser {
         vector<bool> expect = {1, 0 , 0, 0, 0, 0}; // (open-p, close-p, o, n, var, a)
         int para_count;
 
+        int token_i = 1;
+
         bool check(token* t);
         double assign(Node* a_node, int i);
         size_t headmaker(size_t i);

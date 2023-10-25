@@ -33,6 +33,7 @@ Parser::~Parser(){
 
 void Parser::build(size_t i, Node* n) {
     token* t = tokens[i];
+    token_i++;
     if (t->type == types::END) {  
         if(para_count != 0){
             throw string("Unexpected token at line ") + to_string(t->line) 
@@ -132,8 +133,8 @@ double Parser::calculate(Node* node, bool isRoot) {
         if(variables.find(node->value) != variables.end()){
             return variables[node->value];
         }else{
-            throw string("Unexpected token at line ") + to_string(node->token_line) 
-            + " column " + to_string(node->token_column) + ": " + node->value;
+            throw runtime_error(("Unexpected token at line ") + to_string(node->token_line) 
+            + " column " + to_string(node->token_column) + ": " + node->value);
         }
     } else if (node->type == types::OPERATOR) {
         double result = 0.0;
@@ -168,7 +169,7 @@ double Parser::assign(Node* a_node, int i){
     vector<string> variable_buffer;
     while(child->type == types::VARIABLE){
         if(i+1 == a_node->child_count){
-             throw string("Unexpected token at line ") + to_string(child->token_line) 
+            throw string("Unexpected token at line ") + to_string(child->token_line) 
             + " column " + to_string(child->token_column) + ": " + child->value;
         }
         variable_buffer.push_back(child->value);

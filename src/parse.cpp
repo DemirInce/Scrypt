@@ -21,9 +21,9 @@ int main(){
             try{
                 p->build(1, p->head[0]);
                 for(Node* head:p->head){
-                    double result = p->calculate(head, true);
                     p->print(head, true);
                     cout << endl;
+                    double result = p->calculate(head, true);
                     cout << result << endl;
                 }
             }catch(string e){
