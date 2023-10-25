@@ -37,7 +37,7 @@ void Parser::build(size_t i, Node* n) {
     if (t->type == types::END) {  
         if(para_count != 0){
             throw string("Unexpected token at line ") + to_string(t->line) 
-            + " column " + to_string(t->column) + ": " + t->value;            
+            + " column " + to_string(t->column + 1) + ": " + t->value;            
         }
         return;
     }
