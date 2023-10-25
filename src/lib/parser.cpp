@@ -48,12 +48,12 @@ void Parser::build(size_t i, Node* n) {
         build(i, head[head.size()-1]);
         return;
     }
-    if(!check(t) || para_count < 0){ 
+    if(!check(t)){ 
         throw string("Unexpected token at line ") + to_string(t->line) 
         + " column " + to_string(t->column) + ": " + t->value;
     }
 
-    if (t->value == "(") {                                                                 
+    if (t->value == "(") { 
         expect = {0, 0, 1, 0, 0, 1};  // (open-p, close-p, o, n, var, a)
         para_count++;
         build(i + 1, n);
@@ -206,7 +206,7 @@ bool Parser::check(token* t){ // (open-p, close-p, o, n, var, a)
 }
 
 size_t Parser::headmaker(size_t i){
-    while (i < tokens.size() && tokens[i]->type == types::PARENTHESES) {
+    while (i < tokens.size() && tokens[i]->value == "(") {
         expect = {0, 0, 1, 0, 0, 1};
         para_count++;
         i++;
