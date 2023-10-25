@@ -9,11 +9,12 @@ using namespace std;
 
 #define HERE cout << "here\n";
 
-Node::Node(token* t) {
+Node::Node(token* t, int i) {
     this->value = t->value;
     this->type = t->type;
     this->token_line = t->line;
     this->token_column = t->column;
+    this->token_i = i;
 }
 
 Parser::Parser(const vector<token*>& tokens) {
@@ -63,7 +64,7 @@ void Parser::build(size_t i, Node* n) {
         build(i + 1, n->parent);
     } else {                                                                       
 
-        Node* next = new Node(t);
+        Node* next = new Node(t, i);
         all_nodes.push_back(next);
         next->parent = n;
         n->children.push_back(next);
@@ -168,8 +169,8 @@ double Parser::assign(Node* a_node, int i){
     vector<string> variable_buffer;
     while(child->type == types::VARIABLE){
         if(i+1 == a_node->child_count){
-            throw string("Unexpected token at line ") + to_string(child->token_line) 
-            + " column " + to_string(child->token_column) + ": " + child->value;
+            throw string("Unexpected token at line ") + to_string(tokens[child->token_i+1]->line) 
+            + " column " + to_string(tokens[child->token_i+1]->column) + ": " + tokens[child->token_i+1]->value;
         }
         variable_buffer.push_back(child->value);
         i++;
@@ -218,7 +219,7 @@ size_t Parser::headmaker(size_t i){
         + " column " + to_string(t->column) + ": " + t->value;          
     }
 
-    Node* n = new Node(t);
+    Node* n = new Node(t, i);
     all_nodes.push_back(n);
     head.push_back(n);
 

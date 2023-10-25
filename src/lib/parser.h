@@ -7,7 +7,7 @@
 #include <map>
 
 struct Node {
-    Node(token* t);
+    Node(token* t, int i);
 
     types type;
     string value;
@@ -17,6 +17,7 @@ struct Node {
 
     int token_line;
     int token_column;
+    int token_i;
 };
 
 class Parser {
