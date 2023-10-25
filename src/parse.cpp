@@ -15,15 +15,18 @@ int main(){
         return 1;
     }
 
+    Node* curr_head;
+
     if(tvec.size() > 1){
         try{
             Parser* p= new Parser(tvec);
             try{
                 p->build(1, p->head[0]);
                 for(Node* head:p->head){
+                    curr_head = head;
+                    double result = p->calculate(head, true);
                     p->print(head, true);
                     cout << endl;
-                    double result = p->calculate(head, true);
                     cout << result << endl;
                 }
             }catch(string e){
@@ -33,6 +36,7 @@ int main(){
                 return 2;
             }catch(const runtime_error& e){
                 cout << e.what() << endl;
+                p->print(curr_head, true);
                 delete l;        
                 delete p;
                 return 3;
