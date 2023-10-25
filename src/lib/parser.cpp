@@ -133,8 +133,7 @@ double Parser::calculate(Node* node, bool isRoot) {
         if(variables.find(node->value) != variables.end()){
             return variables[node->value];
         }else{
-            throw runtime_error(("Unexpected token at line ") + to_string(node->token_line) 
-            + " column " + to_string(node->token_column) + ": " + node->value);
+            throw runtime_error("Runtime error: unknown identifier " + node->value);
         }
     } else if (node->type == types::OPERATOR) {
         double result = 0.0;
@@ -208,7 +207,7 @@ bool Parser::check(token* t){ // (open-p, close-p, o, n, var, a)
 
 size_t Parser::headmaker(size_t i){
     while (i < tokens.size() && tokens[i]->type == types::PARENTHESES) {
-        expect = {0, 0, 1, 0, 0, 1};
+        expect = {0, 0, 1, 1, 0, 1};
         para_count++;
         i++;
     }

@@ -27,7 +27,7 @@ class Parser {
 
         map<string, double> variables;
 
-        vector<bool> expect = {1, 0 , 0, 0, 0, 0}; // (open-p, close-p, o, n, var, a)
+        vector<bool> expect = {1, 0 , 0, 1, 0, 0}; // (open-p, close-p, o, n, var, a)
         int para_count;
 
         int token_i = 1;
