@@ -35,8 +35,8 @@ int main(){
                 delete p;
                 return 2;
             }catch(const runtime_error& e){
-                cout << e.what() << endl;
                 p->print(curr_head, true);
+                cout << e.what() << endl;
                 delete l;        
                 delete p;
                 return 3;
