@@ -36,6 +36,7 @@ int main(){
                 return 2;
             }catch(const runtime_error& e){
                 p->print(curr_head, true);
+                cout << endl;
                 cout << e.what() << endl;
                 delete l;        
                 delete p;
