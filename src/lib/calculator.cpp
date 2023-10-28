@@ -35,10 +35,41 @@ Calculator::OperatorNode::OperatorNode(char op, ASTNode* left, ASTNode* right) :
     // Initialize OperatorNode members
 }
 
+double Calculator::OperatorNode::evaluate() const {
+    double leftValue = left->evaluate();
+    double rightValue = right->evaluate();
+
+    // Implement the operation based on the operator
+    switch (op) {
+        case '+':
+            return leftValue + rightValue;
+        case '-':
+            return leftValue - rightValue;
+        case '*':
+            return leftValue * rightValue;
+        case '/':
+            if (rightValue != 0) {
+                return leftValue / rightValue;
+            } else {
+                throw std::runtime_error("Division by zero is not allowed.");
+            }
+        // Add more cases for other operators as needed
+        default:
+            throw std::runtime_error("Invalid operator.");
+    }
+}
+/////////////////////////////////////////////////////////////////////////////////
+
 // Constructor for NumberNode
 Calculator::NumberNode::NumberNode(double value) : value(value) {
     // Initialize NumberNode members
 }
+
+double Calculator::NumberNode::evaluate() const {
+    return value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 // Constructor for VariableNode
 Calculator::VariableNode::VariableNode(const std::string& name, double value) : name(name), value(value) {
