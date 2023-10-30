@@ -15,14 +15,14 @@ int main(){
         return 1;
     }
 
-    Node* curr_head;
+    CNode* curr_head;
 
     if(tvec.size() > 1){
         try{
             Calculator* c= new Calculator(tvec);
             try{
                 c->build(1, c->head[0]);
-                for(Node* head:c->head){
+                for(CNode* head:c->head){
                     curr_head = head;
                     double result = c->calculate(head, true);
                     c->print(head, true);

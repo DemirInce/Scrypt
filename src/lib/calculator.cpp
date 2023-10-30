@@ -10,7 +10,7 @@ using namespace std;
 
 #define HERE cout << "here\n";
 
-Node::Node(token* t, int i) {
+CNode::CNode(token* t, int i) {
     this->value = t->value;
     this->type = t->type;
     this->token_line = t->line;
@@ -27,12 +27,12 @@ Calculator::Calculator(const vector<token*>& tokens) {
 }
 
 Calculator::~Calculator(){
-    for(Node* n:all_nodes){
+    for(CNode* n:all_nodes){
         delete n;
     }
 }
 
-void Calculator::build(size_t i, Node* n) {
+void Calculator::build(size_t i, CNode* n) {
     token* t = tokens[i];
     token_i++;
     if (t->type == types::END) {  
@@ -64,7 +64,7 @@ void Calculator::build(size_t i, Node* n) {
         build(i + 1, n->parent);
     } else {                                                                       
 
-        Node* next = new Node(t, i);
+        CNode* next = new CNode(t, i);
         all_nodes.push_back(next);
         next->parent = n;
         n->children.push_back(next);
@@ -83,7 +83,7 @@ void Calculator::build(size_t i, Node* n) {
     }
 }
 
-void Calculator::print(Node* node, bool isRoot = true) {
+void Calculator::print(CNode* node, bool isRoot = true) {
     if (node == nullptr) {
         return;
     }
@@ -118,7 +118,7 @@ void Calculator::print(Node* node, bool isRoot = true) {
     }
 }
 
-double Calculator::calculate(Node* node, bool isRoot) {
+double Calculator::calculate(CNode* node, bool isRoot) {
     if (node == nullptr) {
         return 0.0;
     }
@@ -164,8 +164,8 @@ double Calculator::calculate(Node* node, bool isRoot) {
     }
 }
 
-double Calculator::assign(Node* a_node, int i){
-    Node* child = a_node->children[i];
+double Calculator::assign(CNode* a_node, int i){
+    CNode* child = a_node->children[i];
     vector<string> variable_buffer;
     while(child->type == types::VARIABLE){
         if(i+1 == a_node->child_count){
@@ -219,7 +219,7 @@ size_t Calculator::headmaker(size_t i){
         + " column " + to_string(t->column) + ": " + t->value;          
     }
 
-    Node* n = new Node(t, i);
+    CNode* n = new CNode(t, i);
     all_nodes.push_back(n);
     head.push_back(n);
 
