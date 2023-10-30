@@ -18,6 +18,9 @@ lex: lex.cpp lib/lexer.cpp
 parse: parse.cpp lib/parser.cpp lib/lexer.cpp
 	${CXX} $(CXXFLAGS) -O3 -o $@ $+
 
+calc: calc.cpp lib/calculator.cpp lib/lexer.cpp
+	${CXX} $(CXXFLAGS) -O3 -o $@ $+
+
 clean:
 	rm -f lex
 	rm -r lex.dSYM

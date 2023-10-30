@@ -32,7 +32,6 @@ Calculator::~Calculator(){
     }
 }
 
-
 void Calculator::build(size_t i, Node* n) {
     token* t = tokens[i];
     token_i++;

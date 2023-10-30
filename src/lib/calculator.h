@@ -37,7 +37,7 @@ class Calculator {
         double assign(Node* a_node, int i);
         size_t headmaker(size_t i);
 
-        string Calculator::infixToSExpression(const vector<token*>& tokens);
+        //string Calculator::infixToSExpression(const vector<token*>& tokens);
 
     public:
         Calculator(const std::vector<token*>& tokens);
